@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      fuck you
+      사이트 설명을 넣을 예정입니다.
     </div>
   );
 }
