@@ -37,7 +37,7 @@ export default function Home() {
                 <div className="ml-4 mt-1">
                   F12를 눌러 콘솔에 아래 코드를 입력합니다.<br/>
                   <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">
-                    javascript:$.getScript("https://scoredp.duckdns.org/iidx.js");
+                    javascript:$.getScript(&quot;https://scoredp.duckdns.org/iidx.js&quot;);
                   </code>
                 </div>
               </li>

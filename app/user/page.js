@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   useReactTable,
@@ -24,9 +24,9 @@ export default function User() {
   const [globalFilter, setGlobalFilter] = useState('');
   const router = useRouter();
 
-  const handleUserClick = (iidxId) => {
+  const handleUserClick = useCallback((iidxId) => {
     router.push(`/data?iidxId=${encodeURIComponent(iidxId)}`);
-  };
+  }, [router]);
 
   const columns = useMemo(
     () => [
