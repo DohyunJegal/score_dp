@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Spinner from '../components/Spinner';
 
 export default function Data() {
@@ -11,6 +11,7 @@ export default function Data() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const levels = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -59,8 +60,39 @@ export default function Data() {
     if (iidxIdParam) {
       setIidxId(iidxIdParam);
       fetchData(iidxIdParam, level);
+      // URL에서 파라미터 제거
+      router.replace('/data', { scroll: false });
     }
-  }, [searchParams, level]);
+  }, [searchParams, level, router]);
+
+  const getClearColor = (clearLamp) => {
+    const colorMap = {
+      'NO_PLAY': '#999999',
+      'FAILED': '#999999',
+      'ASSIST_CLEAR': '#A185EA', 
+      'EASY_CLEAR': '#88C94E',
+      'CLEAR': '#91DBEA',
+      'HARD_CLEAR': '#FFFFFF',
+      'EX_HARD_CLEAR': '#F6EE52',
+      'FULL_COMBO': '#73C2F1'
+    };
+    return colorMap[clearLamp] || '#999999';
+  };
+
+  const groupByPerceivedLevel = (songs) => {
+    return songs.reduce((acc, song) => {
+      let level = song.perceivedLevel || '미분류';
+      // 정수인 경우 .0을 붙여서 표시
+      if (typeof level === 'number' && level % 1 === 0) {
+        level = level.toFixed(1);
+      }
+      if (!acc[level]) acc[level] = [];
+      acc[level].push(song);
+      return acc;
+    }, {});
+  };
+
+  const groupedSongs = groupByPerceivedLevel(songData);
 
 
   return (
@@ -112,31 +144,41 @@ export default function Data() {
       {loading && <Spinner message="데이터를 가져오는 중..." />}
       
       {!loading && songData.length > 0 && (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-white overflow-hidden">
-            <thead className="border-t border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">체감 난이도</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">곡명</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">점수</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">클리어</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">DJ LEVEL</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-700">BP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {songData.map((song, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-700">{song.perceivedLevel || '미분류'}</td>
-                  <td className="px-4 py-3 text-gray-700">{song.title}</td>
-                  <td className="px-4 py-3 text-gray-700">{song.userClearInfo?.score || '-'}</td>
-                  <td className="px-4 py-3 text-gray-700">{song.userClearInfo?.clearLamp || '-'}</td>
-                  <td className="px-4 py-3 text-gray-700">{song.userClearInfo?.djLevel || '-'}</td>
-                  <td className="px-4 py-3 text-gray-700">{song.userClearInfo?.pgreat || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-4">
+          {Object.entries(groupedSongs)
+            .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
+            .map(([perceivedLevel, songs]) => (
+            <div key={perceivedLevel} className="flex border border-gray-200">
+              <div className="bg-gray-800 text-white p-3 font-bold flex items-center justify-center min-w-[60px] text-center">
+                {perceivedLevel}
+              </div>
+              <div className="flex-1 grid grid-cols-6">
+                {songs.map((song, index) => (
+                  <div 
+                    key={index} 
+                    className="relative p-1 flex flex-col justify-between bg-white border border-gray-200 -ml-px -mt-px"
+                    style={{
+                      borderRadius: 0,
+                      boxSizing: 'border-box',
+                      borderRightWidth: song.userClearInfo?.hasPlayed && song.userClearInfo?.clearLamp ? '8px' : '1px',
+                      borderRightColor: song.userClearInfo?.hasPlayed && song.userClearInfo?.clearLamp ? 
+                        getClearColor(song.userClearInfo.clearLamp) : '#e5e7eb'
+                    }}
+                    title={`Clear: ${song.userClearInfo?.clearLamp || 'None'}, HasPlayed: ${song.userClearInfo?.hasPlayed}`}
+                  >
+                    <div className="text-xs font-medium text-gray-800 leading-tight break-words">
+                      {song.title}
+                    </div>
+                    {song.userClearInfo?.hasPlayed && (
+                      <div className="text-xs text-gray-600">
+                        {song.userClearInfo.djLevel || ''} ({song.userClearInfo.score || ''})
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
