@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Spinner from '../components/Spinner';
 
-export default function Data() {
+function DataContent() {
   const [iidxId, setIidxId] = useState('');
   const [level, setLevel] = useState(12);
   const [songData, setSongData] = useState([]);
@@ -182,5 +182,13 @@ export default function Data() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Data() {
+  return (
+    <Suspense fallback={<Spinner message="페이지를 로딩하는 중..." />}>
+      <DataContent />
+    </Suspense>
   );
 }
