@@ -72,7 +72,7 @@ function DataContent() {
       'ASSIST_CLEAR': '#A185EA', 
       'EASY_CLEAR': '#88C94E',
       'CLEAR': '#91DBEA',
-      'HARD_CLEAR': '#FFFFFF',
+      'HARD_CLEAR': '#FF3200',
       'EX_HARD_CLEAR': '#F6EE52',
       'FULL_COMBO': '#73C2F1'
     };
