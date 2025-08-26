@@ -24,3 +24,19 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 데스크톱 메인 컨텐츠 스타일 */
+.main-content {
+  margin-left: 220px;
+  padding: 20px;
+}
+
+/* 모바일 메인 컨텐츠 스타일 */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 0; /* 여백 제거 */
+    padding: 15px;
+    padding-top: 58px; /* nav 높이 + 여백 */
+  }
+}

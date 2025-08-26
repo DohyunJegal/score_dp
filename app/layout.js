@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Navigation />
-        <main style={{ marginLeft: '220px', padding: '20px' }}>
+        <main className="main-content">
           {children}
         </main>
       </body>

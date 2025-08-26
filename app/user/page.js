@@ -100,9 +100,23 @@ export default function User() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      {/* 데스크톱 헤더 */}
+      <div className="hidden md:flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Player</h1>
         <div className="w-80">
+          <input
+            value={globalFilter ?? ''}
+            onChange={e => setGlobalFilter(String(e.target.value))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+            placeholder="Name or IIDX ID"
+          />
+        </div>
+      </div>
+
+      {/* 모바일 헤더 */}
+      <div className="md:hidden mb-6">
+        <h1 className="text-2xl font-bold mb-4">Player</h1>
+        <div>
           <input
             value={globalFilter ?? ''}
             onChange={e => setGlobalFilter(String(e.target.value))}
