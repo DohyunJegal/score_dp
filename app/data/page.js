@@ -74,7 +74,7 @@ function DataContent() {
       'CLEAR': '#91DBEA',
       'HARD_CLEAR': '#FF3200',
       'EX_HARD_CLEAR': '#F6EE52',
-      'FULL_COMBO': '#73C2F1'
+      'FULL_COMBO': '#00ffccff'
     };
     return colorMap[clearLamp] || '#999999';
   };
