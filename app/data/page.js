@@ -171,7 +171,15 @@ function DataContent() {
                     </div>
                     {song.userClearInfo?.hasPlayed && (
                       <div className="text-xs text-gray-600">
-                        {song.userClearInfo.djLevel || ''} ({song.userClearInfo.score || ''})
+                        {(() => {
+                          const hasScore = song.userClearInfo.score > 0;
+                          const hasValidDjLevel = song.userClearInfo.djLevel && song.userClearInfo.djLevel !== 'F';
+                          
+                          if (hasScore || hasValidDjLevel) {
+                            return `${song.userClearInfo.djLevel || ''} (${song.userClearInfo.score || ''})`;
+                          }
+                          return ''; 
+                        })()}
                       </div>
                     )}
                   </div>
