@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Spinner from '../components/Spinner';
+import './data.css';
 
 function DataContent() {
   const [iidxId, setIidxId] = useState('');
@@ -198,18 +199,21 @@ function DataContent() {
                 {songs.map((song, index) => (
                   <div 
                     key={index} 
-                    className="relative p-1 flex flex-col justify-between bg-white border border-gray-200 -ml-px -mt-px"
+                    className={`song-item relative p-1 flex flex-col justify-between border border-gray-200 -ml-px -mt-px ${
+                      song.difficulty === 'HYPER' ? 'song-item-hyper' : 
+                      song.difficulty === 'LEGGENDARIA' ? 'song-item-leggendaria' : 'song-item-another'
+                    } ${
+                      song.userClearInfo?.hasPlayed && song.userClearInfo?.clearLamp ? 'clear-border' : 'no-clear-border'
+                    }`}
                     style={{
-                      borderRadius: 0,
-                      boxSizing: 'border-box',
-                      borderRightWidth: song.userClearInfo?.hasPlayed && song.userClearInfo?.clearLamp ? '8px' : '1px',
                       borderRightColor: song.userClearInfo?.hasPlayed && song.userClearInfo?.clearLamp ? 
                         getClearColor(song.userClearInfo.clearLamp) : '#e5e7eb'
                     }}
-                    title={`Clear: ${song.userClearInfo?.clearLamp || 'None'}, HasPlayed: ${song.userClearInfo?.hasPlayed}`}
                   >
-                    <div className="text-xs font-medium text-gray-800 leading-tight break-words">
-                      {song.title}
+                    <div className={`text-xs font-medium leading-tight break-words ${
+                      song.versionNo === 32 ? 'song-title-current' : 'song-title-default'
+                    }`}>
+                      {song.title}{song.difficulty === 'LEGGENDARIA' ? '†' : ''}
                     </div>
                     {song.userClearInfo?.hasPlayed && (
                       <div className="text-xs text-gray-600">

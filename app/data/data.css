@@ -1,0 +1,33 @@
+.song-item {
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.song-item-hyper {
+  background-color: #ffa50010;
+}
+
+.song-item-leggendaria {
+  background-color: #fd067c10;
+}
+
+.song-item-another {
+  background-color: white;
+}
+
+.song-title-current {
+  color: #007fee;
+}
+
+.song-title-default {
+  color: #1f2937;
+}
+
+.clear-border {
+  border-right-width: 8px;
+}
+
+.no-clear-border {
+  border-right-width: 1px;
+  border-right-color: #e5e7eb;
+}
