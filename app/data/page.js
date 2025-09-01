@@ -30,6 +30,11 @@ function DataContent() {
       const data = await response.json();
       // API 응답에서 songs 배열 추출
       setSongData(data.songs || []);
+      
+      // URL 업데이트 (히스토리에 추가하지 않음)
+      const newUrl = `/data?iidxId=${encodeURIComponent(iidxId)}&level=${level}`;
+      window.history.replaceState(null, '', newUrl);
+      
     } catch (error) {
       setError(error.message);
     } finally {
@@ -58,13 +63,17 @@ function DataContent() {
 
   useEffect(() => {
     const iidxIdParam = searchParams.get('iidxId');
+    const levelParam = searchParams.get('level');
+    
     if (iidxIdParam) {
       setIidxId(iidxIdParam);
-      fetchData(iidxIdParam, level);
-      // URL에서 파라미터 제거
-      router.replace('/data', { scroll: false });
+      const targetLevel = levelParam ? parseInt(levelParam) : level;
+      if (levels.includes(targetLevel)) {
+        setLevel(targetLevel);
+      }
+      fetchData(iidxIdParam, targetLevel);
     }
-  }, [searchParams, level, router]);
+  }, [searchParams]);
 
   const getClearColor = (clearLamp) => {
     const colorMap = {
