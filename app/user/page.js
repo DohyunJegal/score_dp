@@ -25,7 +25,7 @@ export default function User() {
   const router = useRouter();
 
   const handleUserClick = useCallback((iidxId) => {
-    router.push(`/data?iidxId=${encodeURIComponent(iidxId)}`);
+    router.push(`/data?iidxId=${encodeURIComponent(iidxId)}&level=12`);
   }, [router]);
 
   const columns = useMemo(
