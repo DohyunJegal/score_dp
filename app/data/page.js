@@ -51,7 +51,8 @@ function DataContent() {
   const handleLevelChange = (newLevel) => {
     setLevel(newLevel);
     if (iidxId.trim()) {
-      fetchData(iidxId.trim(), newLevel);
+      const newUrl = `/data?iidxId=${encodeURIComponent(iidxId.trim())}&level=${newLevel}`;
+      router.replace(newUrl);
     }
   };
 
