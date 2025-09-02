@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { toPng } from 'html-to-image';
+import { MdSaveAlt } from "react-icons/md";
 import Spinner from '../components/Spinner';
 import './data.css';
 
@@ -11,8 +13,10 @@ function DataContent() {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const rankingTableRef = useRef(null);
 
   const levels = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -105,13 +109,52 @@ function DataContent() {
 
   const groupedSongs = groupByPerceivedLevel(songData);
 
+  const exportToImage = useCallback(() => {
+    if (rankingTableRef.current === null) {
+      return;
+    }
+    
+    setIsExporting(true);
+    
+    toPng(rankingTableRef.current, { 
+      cacheBust: true,
+      backgroundColor: '#ffffff',
+      style: {
+        transform: 'scale(1)',
+        transformOrigin: 'top left'
+      }
+    })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = `${iidxId || ''}_${level}level.png`;
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.error('이미지 내보내기 실패:', err);
+        alert('이미지 내보내기에 실패했습니다.');
+      })
+      .finally(() => {
+        setIsExporting(false);
+      });
+  }, [rankingTableRef, level, iidxId]);
 
   return (
     <div className="p-3 md:p-6">
       {/* 데스크톱 헤더 */}
       <div className="hidden md:flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Player Data</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          {songData.length > 0 && (
+            <button
+              onClick={exportToImage}
+              disabled={isExporting}
+              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center rounded-md"
+              title="이미지 저장"
+            >
+              <MdSaveAlt size={20} className="text-gray-600" />
+            </button>
+          )}
           <input
             type="text"
             value={iidxId}
@@ -131,7 +174,19 @@ function DataContent() {
 
       {/* 모바일 헤더 */}
       <div className="md:hidden mb-6">
-        <h1 className="text-2xl font-bold mb-4">Player Data</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold">Player Data</h1>
+          {songData.length > 0 && (
+            <button
+              onClick={exportToImage}
+              disabled={isExporting}
+              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center rounded-md"
+              title="이미지 저장"
+            >
+              <MdSaveAlt size={20} className="text-gray-600" />
+            </button>
+          )}
+        </div>
         <div className="flex gap-2">
           <input
             type="text"
@@ -199,7 +254,7 @@ function DataContent() {
       {loading && <Spinner message="데이터를 가져오는 중..." />}
       
       {!loading && songData.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-4" ref={rankingTableRef}>
           {Object.entries(groupedSongs)
             .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
             .map(([perceivedLevel, songs]) => (
