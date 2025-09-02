@@ -107,7 +107,7 @@ function DataContent() {
 
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       {/* 데스크톱 헤더 */}
       <div className="hidden md:flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Player Data</h1>
@@ -151,8 +151,9 @@ function DataContent() {
       </div>
 
       <div className="mb-6">
-        {/* 데스크톱 레벨 선택 */}
-        <div className="hidden md:flex justify-center gap-2">
+        {/* 데스크톱 레벨 바 */}
+        <div className="hidden md:block overflow-x-auto">
+          <div className="flex justify-center gap-2" style={{ minWidth: 'fit-content' }}>
           {levels.map((lvl) => (
             <button
               key={lvl}
@@ -166,9 +167,10 @@ function DataContent() {
               ☆{lvl}
             </button>
           ))}
+          </div>
         </div>
         
-        {/* 모바일 레벨 선택 (스크롤 가능) */}
+        {/* 모바일 레벨 바 */}
         <div className="md:hidden overflow-x-auto">
           <div className="flex gap-2 pb-2" style={{ minWidth: 'fit-content' }}>
             {levels.map((lvl) => (
@@ -202,10 +204,10 @@ function DataContent() {
             .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
             .map(([perceivedLevel, songs]) => (
             <div key={perceivedLevel} className="flex border border-gray-200">
-              <div className="bg-gray-800 text-white p-3 font-bold flex items-center justify-center min-w-[60px] text-center">
+              <div className="bg-gray-800 text-white p-2 sm:p-3 font-bold flex items-center justify-center min-w-[50px] sm:min-w-[60px] text-center text-sm sm:text-base">
                 {perceivedLevel}
               </div>
-              <div className="flex-1 grid grid-cols-3 md:grid-cols-6">
+              <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
                 {songs.map((song, index) => (
                   <div 
                     key={index} 
